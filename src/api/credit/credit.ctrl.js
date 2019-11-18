@@ -42,7 +42,7 @@ export const AddCredit = async (ctx) => {
         console.log(`AddCredit - 올바르지 않은 충전 액수입니다. / 충전 유형 : ${ctx.request.body.charge_money}`);
         ctx.status = 400;
         ctx.body = {
-            "error": "006"
+            "error": "007"
         }
     }
 
@@ -51,7 +51,7 @@ export const AddCredit = async (ctx) => {
         console.log(`AddCredit - 올바르지 않은 충전 유형입니다. / 충전 유형 : ${ctx.request.body.charge_type}`);
         ctx.status = 400;
         ctx.body = {
-            "error": "007"
+            "error": "008"
         }
         return;
     }
