@@ -33,7 +33,7 @@ export const Login = async (ctx) => {
         console.log(`Login - 존재하지 않는 계정입니다. / 입력된 아이디 : ${ctx.request.body.id}`);
         ctx.status = 400;
         ctx.body = {
-            "error": "003"
+            "error": "005"
         }
         return;
     }
@@ -44,7 +44,7 @@ export const Login = async (ctx) => {
         console.log(`Login - 비밀번호를 틀렸습니다.`);
         ctx.status = 400;
         ctx.body = {
-            "error": "004"
+            "error": "006"
         }
         return;
     }
