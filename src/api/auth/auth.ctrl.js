@@ -50,7 +50,7 @@ export const Login = async (ctx) => {
     }
 
     const payload = {
-        user_id: founded.user_id
+        user_code: founded.user_code
     };
 
     let token = null;
