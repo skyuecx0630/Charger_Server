@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import { account, charge_list } from 'models';
+import { decodeToken } from 'lib/token'
 
 
 export const AddCredit = async (ctx) => {
@@ -76,4 +77,43 @@ export const AddCredit = async (ctx) => {
         "credit" : new_credit
     }
     
+}
+
+export const ChargeList = async (ctx) => {
+    //로그인 한 유저는 누구인가?
+    const user = await decodeToken(ctx.header.token);
+
+    if (user == null) {
+        console.log(`ChargeList - 올바르지 않은 토큰입니다.`);
+        ctx.status = 400;
+        ctx.body = {
+            "error": "009"
+        }
+        return;
+    }
+
+    //유저의 충전 정보 불러오기
+    const list = await charge_list.findAll({
+        where : {
+            charger : user.user_code
+        }
+    });
+
+    let chargeArray = [];
+
+    for(var i in list){
+        const record = {
+            charge_money : list[i].charge_money,
+            charged_at : list[i].charged_at,
+            charge_type : list[i].charge_type
+        }
+        chargeArray.push(record);
+    }
+
+    console.log(`ChargeList - 충전 목록을 반환하였습니다.`)
+
+    ctx.status = 200;
+    ctx.body = {
+        "charge_list" : chargeArray
+    }
 }
