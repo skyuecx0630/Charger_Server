@@ -32,7 +32,11 @@ export const Account = (sequelize, DataTypes) => {
         },
         credit: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            defaultValue: 0
+        },
+        electricity: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
         }
     })
 }
