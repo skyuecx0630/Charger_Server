@@ -47,9 +47,12 @@ export const AskQuestion = async (ctx) => {
 }
 
 export const ModifyQuestion = async (ctx) => {
+    //Joi 형식 검사
     const QuestionInput = Joi.object().keys({
+        question_code: Joi.number().integer().required(),
         title: Joi.string().max(40).required(),
-        content: Joi.string().required()
+        content: Joi.string().required(),
+        is_faq: Joi.boolean()
     });
 
     const Result = Joi.validate(ctx.request.body, QuestionInput);
@@ -62,4 +65,31 @@ export const ModifyQuestion = async (ctx) => {
         }
         return;
     }
+
+    //수정하는 사람과 게시글 작성자가 같은가?
+    const founded = await question.findOne({
+        where : {
+            question_code : ctx.request.body.question_code
+        }
+    })
+
+    if (founded == null){
+        console.log(`ModifyQuestion - 수정하는 사람과 게시글 작성자가 다릅니다.`);
+        ctx.status = 400;
+        ctx.body = {
+            "error": "010"
+        }
+        return;
+    }
+
+    //게시글 수정
+    await founded.update({
+        title: ctx.request.body.title,
+        content: ctx.request.body.content,
+        is_faq: ctx.request.body.is_faq
+    })
+
+    console.log(`ModifyQuestion - 게시글이 성공적으로 수정되었습니다.`)
+
+    ctx.status = 200;
 }
