@@ -178,3 +178,73 @@ export const ModifySale = async (ctx) => {
 
     ctx.status = 200;
 }
+
+export const DeleteSale = async (ctx) => {
+
+    //존재하는 판매인가?
+    const sell = await sale.findOne({
+        where: {
+            sale_code: ctx.request.query.s_code
+        }
+    })
+
+    if (sell == null) {
+        console.log(`ModifySale - 판매를 찾을 수 없습니다.`);
+        ctx.status = 400;
+        ctx.body = {
+            "error": "010"
+        }
+        return;
+    }
+
+    //로그인 한 유저는 누구인가?
+    const user = await decodeToken(ctx.header.token);
+
+    if (user == null) {
+        console.log(`DeleteSale - 올바르지 않은 토큰입니다.`);
+        ctx.status = 400;
+        ctx.body = {
+            "error": "009"
+        }
+        return;
+    }
+
+    //유저 정보 받아오기
+    const founded = await account.findOne({
+        where: {
+            user_code: user.user_code
+        }
+    });
+
+    if (founded == null) {
+        console.log(`DeleteSale - 존재하지 않는 계정입니다.`);
+        ctx.status = 400;
+        ctx.body = {
+            "error": "005"
+        }
+        return;
+    }
+
+    //판매자와 삭제하는 사람이 같은가?
+    if (user.user_code != sell.seller) {
+        console.log(`DeleteSale - 판매자와 수정하는 사람이 다릅니다.`);
+        ctx.status = 400;
+        ctx.body = {
+            "error": "011"
+        }
+        return;
+    }
+
+    //판매 삭제
+    const new_elec = founded.electricity + sell.selling_elec
+
+    await founded.update({
+        electricity: new_elec
+    })
+
+    await sell.destroy()
+
+    console.log(`DeleteSale - 판매가 성공적으로 삭제되었습니다.`)
+
+    ctx.status = 200;
+}
