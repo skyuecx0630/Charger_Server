@@ -1,9 +1,11 @@
 import Router from 'koa-router';
-import { MakeSale, ModifySale, DeleteSale } from './sale.ctrl';
+import { MakeSale, ModifySale, DeleteSale, SaleList } from './sale.ctrl';
 
 const sale = new Router();
 
 sale.post('/newsale', MakeSale)
+
+sale.get('/list', SaleList)
 
 sale.put('/modify', ModifySale)
 

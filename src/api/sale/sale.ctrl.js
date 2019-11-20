@@ -248,3 +248,42 @@ export const DeleteSale = async (ctx) => {
 
     ctx.status = 200;
 }
+
+export const SaleList = async (ctx) => {
+    //로그인 한 유저는 누구인가?
+    const user = await decodeToken(ctx.header.token);
+
+    if (user == null) {
+        console.log(`ChargeList - 올바르지 않은 토큰입니다.`);
+        ctx.status = 400;
+        ctx.body = {
+            "error": "009"
+        }
+        return;
+    }
+
+    //유저의 충전 정보 불러오기
+    const list = await sale.findAll({
+        where: {
+            seller: user.user_code
+        }
+    });
+
+    let saleArray = [];
+
+    for (var i in list) {
+        const record = {
+            selling_elec: list[i].selling_elec,
+            selling_price: list[i].selling_price,
+            created_at: list[i].created_at
+        }
+        saleArray.push(record);
+    }
+
+    console.log(`SaleList - 충전 목록을 반환하였습니다.`)
+
+    ctx.status = 200;
+    ctx.body = {
+        "sale_list": saleArray
+    }
+}
