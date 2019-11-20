@@ -6,9 +6,9 @@ import { decodeToken } from 'lib/token'
 export const AddCredit = async (ctx) => {
     //Joi 형식 검사
     const creditInput = Joi.object().keys({
-        charger: Joi.number().integer().required(),
-        charge_money: Joi.number().integer().required(),
-        charge_type: Joi.number().integer().required(),
+        credit_type: Joi.boolean().required(),
+        amount: Joi.number().integer().required(),
+        payment_type: Joi.number().integer().required(),
     });
 
     const Result = Joi.validate(ctx.request.body, creditInput);
@@ -22,15 +22,27 @@ export const AddCredit = async (ctx) => {
         return;
     }
 
-    //존재하는 계정인지 확인 
+    //로그인 한 유저인가?
+    const user = await decodeToken(ctx.header.token);
+
+    if (user == null) {
+        console.log(`AddCredit - 올바르지 않은 토큰입니다.`);
+        ctx.status = 400;
+        ctx.body = {
+            "error": "009"
+        }
+        return;
+    }
+
+    //유저 정보 불러오기
     const founded = await account.findOne({
         where: {
-            user_code: ctx.request.body.charger
+            user_code: user.user_code
         }
     });
 
     if (founded == null) {
-        console.log(`AddCredit - 존재하지 않는 계정입니다. / 입력된 아이디 : ${ctx.request.body.charger}`);
+        console.log(`AddCredit - 존재하지 않는 계정입니다. / 유저 : ${ctx.request.body.charger}`);
         ctx.status = 400;
         ctx.body = {
             "error": "005"
@@ -39,8 +51,8 @@ export const AddCredit = async (ctx) => {
     }
 
     //충전 액수가 올바른지 확인
-    if(ctx.request.body.charge_money <= 0){
-        console.log(`AddCredit - 올바르지 않은 충전 액수입니다. / 충전 유형 : ${ctx.request.body.charge_money}`);
+    if(ctx.request.body.amount <= 0){
+        console.log(`AddCredit - 올바르지 않은 충전량 입니다. / 충전량 : ${ctx.request.body.amount}`);
         ctx.status = 400;
         ctx.body = {
             "error": "007"
@@ -48,8 +60,8 @@ export const AddCredit = async (ctx) => {
     }
 
     //올바른 충전 타입인지 확인
-    if (ctx.request.body.charge_type < 1 || ctx.request.body.charge_type > 3){
-        console.log(`AddCredit - 올바르지 않은 충전 유형입니다. / 충전 유형 : ${ctx.request.body.charge_type}`);
+    if (ctx.request.body.payment_type < 1 || ctx.request.body.payment_type > 3){
+        console.log(`AddCredit - 올바르지 않은 충전 유형입니다. / 충전 유형 : ${ctx.request.body.payment_type}`);
         ctx.status = 400;
         ctx.body = {
             "error": "008"
@@ -59,22 +71,34 @@ export const AddCredit = async (ctx) => {
 
 
     //크레딧 지급
-    const new_credit = founded.credit + ctx.request.body.charge_money
-    await founded.update(
-        { credit: new_credit }
-    )
+    if (ctx.request.body.credit_type == true) {
+        const new_credit = founded.credit + ctx.request.body.amount
+
+        await founded.update({
+            credit: new_credit
+        })
+    }
+    else {
+        const new_elec = founded.electricity + ctx.request.body.amount
+
+        await founded.update({
+            electricity: new_elec
+        })
+    }
     
     await charge_list.create({
-        "charger": ctx.request.body.charger,
-        "charge_money": ctx.request.body.charge_money,
-        "charge_type": ctx.request.body.charge_type
+        "charger": user.user_code,
+        "credit_type": ctx.request.body.credit_type,
+        "amount": ctx.request.body.amount,
+        "payment_type": ctx.request.body.payment_type
     });
 
-    console.log(`AddCredit - 크레딧이 성공적으로 지급되었습니다. / 현재 크레딧 : ${new_credit}`);
+    console.log(`AddCredit - 크레딧이 성공적으로 지급되었습니다.`);
 
     ctx.status = 200;
     ctx.body = {
-        "credit" : new_credit
+        "credit" : founded.credit,
+        "electricity" : founded.electricity
     }
     
 }
@@ -103,9 +127,10 @@ export const ChargeList = async (ctx) => {
 
     for(var i in list){
         const record = {
-            charge_money : list[i].charge_money,
+            credit_type : list[i].credit_type,
+            amount : list[i].amount,
             charged_at : list[i].charged_at,
-            charge_type : list[i].charge_type
+            payment_type : list[i].payment_type
         }
         chargeArray.push(record);
     }
