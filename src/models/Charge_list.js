@@ -9,7 +9,11 @@ export const Charge_list = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        charge_money: {
+        credit_type: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false
+        },
+        amount: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
@@ -17,8 +21,8 @@ export const Charge_list = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW
         },
-        charge_type: {
-            type: DataTypes.STRING,
+        payment_type: {
+            type: DataTypes.INTEGER,
             allowNull: false
         }
     })
