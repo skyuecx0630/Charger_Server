@@ -26,10 +26,6 @@ export const Account = (sequelize, DataTypes) => {
             type: DataTypes.STRING(11),
             allowNull: false
         },
-        address: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
         credit: {
             type: DataTypes.INTEGER,
             defaultValue: 0
