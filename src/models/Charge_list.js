@@ -24,6 +24,14 @@ export const Charge_list = (sequelize, DataTypes) => {
         payment_type: {
             type: DataTypes.INTEGER,
             allowNull: false
+        },
+        credit: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        electricity: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         }
     })
 }
