@@ -90,7 +90,9 @@ export const AddCredit = async (ctx) => {
         "charger": user.user_code,
         "credit_type": ctx.request.body.credit_type,
         "amount": ctx.request.body.amount,
-        "payment_type": ctx.request.body.payment_type
+        "payment_type": ctx.request.body.payment_type,
+        "credit": founded.credit,
+        "electricity": founded.electricity
     });
 
     console.log(`AddCredit - 크레딧이 성공적으로 지급되었습니다.`);
@@ -130,7 +132,9 @@ export const ChargeList = async (ctx) => {
             credit_type : list[i].credit_type,
             amount : list[i].amount,
             charged_at : list[i].charged_at,
-            payment_type : list[i].payment_type
+            payment_type : list[i].payment_type,
+            credit : list[i].credit,
+            electricity : list[i].electricity
         }
         chargeArray.push(record);
     }
