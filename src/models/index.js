@@ -7,7 +7,7 @@ import { Charge_list } from './Charge_list';
 import { Post } from './Post';
 import { Question } from './Question';
 import { Reply } from './Reply';
-import { User_trade } from './User_trade';
+import { Trade_list } from './Trade_list';
 import { Sale } from './Sale';
 
 const config = require(path.join(__dirname, '..', 'config', 'dbconfig.json'))['charger'];
@@ -25,7 +25,7 @@ const charge_list = Charge_list(sequelize, Sequelize);
 const post = Post(sequelize, Sequelize);
 const question = Question(sequelize, Sequelize);
 const reply = Reply(sequelize, Sequelize);
-const user_trade = User_trade(sequelize, Sequelize);
+const trade_list = Trade_list(sequelize, Sequelize);
 const sale = Sale(sequelize, Sequelize);
 
-export { sequelize, Sequelize, account, admin, charge_list, post, question, reply, user_trade, sale };
+export { sequelize, Sequelize, account, admin, charge_list, post, question, reply, trade_list, sale };
