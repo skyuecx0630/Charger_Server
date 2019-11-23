@@ -72,8 +72,7 @@ export const Register = async (ctx) => {
         password: Joi.string().min(8).max(20).required(),
         name: Joi.string().required(),
         email: Joi.string().email().required(),
-        phone: Joi.string().length(11).required(),
-        address: Joi.string().required(),
+        phone: Joi.string().length(11).required()
     });
 
     const result = Joi.validate(ctx.request.body, Registeration)
@@ -142,8 +141,7 @@ export const Register = async (ctx) => {
         "password": password,
         "name": ctx.request.body.name,
         "email": ctx.request.body.email,
-        "phone": ctx.request.body.phone,
-        "address": ctx.request.body.address,
+        "phone": ctx.request.body.phone
     });
 
     console.log(`Register - 새로운 회원이 저장되었습니다. / 아이디 : ${ctx.request.body.id}`);
