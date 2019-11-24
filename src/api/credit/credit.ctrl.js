@@ -146,3 +146,41 @@ export const ChargeList = async (ctx) => {
         "charge_list" : chargeArray
     }
 }
+
+export const ShowCredit = async (ctx) => {
+    //로그인 한 유저는 누구인가?
+    const user = await decodeToken(ctx.header.token);
+
+    if (user == null) {
+        console.log(`ShowCredit - 올바르지 않은 토큰입니다.`);
+        ctx.status = 400;
+        ctx.body = {
+            "error": "009"
+        }
+        return;
+    }
+
+    //유저의 충전 정보 불러오기
+    const founded = await account.findOne({
+        where: {
+            user_code: user.user_code
+        }
+    });
+
+    if (founded == null) {
+        console.log(`ShowCredit - 존재하지 않는 계정입니다. / 유저 : ${user.user_code}`);
+        ctx.status = 400;
+        ctx.body = {
+            "error": "005"
+        }
+        return;
+    }
+
+    console.log(`ShowCredit - 유저의 잔액을 반환하였습니다.`);
+
+    ctx.status = 200;
+    ctx.body = {
+        "credit" : founded.credit,
+        "electricity" : founded.electricity
+    }
+}
