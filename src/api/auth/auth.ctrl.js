@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import crypto from 'crypto';
 import { account } from 'models';
-import { generateToken } from 'lib/token.js';
+import { generateToken, decodeToken } from 'lib/token.js';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -148,4 +148,44 @@ export const Register = async (ctx) => {
 
     ctx.status = 200;
 
+}
+
+export const UserInfo = async (ctx) => {
+    const user = await decodeToken(ctx.header.token);
+
+    if (user == null) {
+        console.log(`UserInfo - 올바르지 않은 토큰입니다.`);
+        ctx.status = 400;
+        ctx.body = {
+            "error": "009"
+        }
+        return;
+    }
+
+    //유저 정보 받아오기
+    const founded = await account.findOne({
+        where: {
+            user_code: user.user_code
+        }
+    });
+
+    if (founded == null) {
+        console.log(`UserInfo - 존재하지 않는 계정입니다.`);
+        ctx.status = 400;
+        ctx.body = {
+            "error": "005"
+        }
+        return;
+    }
+
+    console.log(`UserInfo - 유저 정보를 반환하였습니다.`)
+
+    ctx.status = 200
+    ctx.body = {
+        "name": founded.name,
+        "email": founded.email,
+        "phone": founded.phone,
+        "credit": founded.credit,
+        "electricity": founded.electricity
+    }
 }
