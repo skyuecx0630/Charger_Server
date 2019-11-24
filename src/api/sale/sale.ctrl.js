@@ -264,9 +264,7 @@ export const SaleList = async (ctx) => {
 
     //유저의 충전 정보 불러오기
     const list = await sale.findAll({
-        where: {
-            seller: user.user_code
-        }
+        
     });
 
     let saleArray = [];
