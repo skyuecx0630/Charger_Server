@@ -213,7 +213,7 @@ export const MakeTrade = async (ctx) => {
     
     //유저에게 전력 지급 및 잔액 차감
     const new_credit = founded.credit - price
-    const new_elec = founded.electricity + ctx.request.body.trading_elec
+    const new_elec = parseInt(founded.electricity) + parseInt(ctx.request.body.trading_elec)
 
     await founded.update({
         credit: new_credit,
