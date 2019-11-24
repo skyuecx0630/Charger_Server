@@ -9,6 +9,7 @@ import { Question } from './Question';
 import { Reply } from './Reply';
 import { Trade_list } from './Trade_list';
 import { Sale } from './Sale';
+import { Market_price } from './Market_price';
 
 const config = require(path.join(__dirname, '..', 'config', 'dbconfig.json'))['charger'];
 
@@ -27,5 +28,6 @@ const question = Question(sequelize, Sequelize);
 const reply = Reply(sequelize, Sequelize);
 const trade_list = Trade_list(sequelize, Sequelize);
 const sale = Sale(sequelize, Sequelize);
+const market_price = Market_price(sequelize, Sequelize);
 
-export { sequelize, Sequelize, account, admin, charge_list, post, question, reply, trade_list, sale };
+export { sequelize, Sequelize, account, admin, charge_list, post, question, reply, trade_list, sale, market_price };
