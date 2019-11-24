@@ -57,6 +57,7 @@ export const AddCredit = async (ctx) => {
         ctx.body = {
             "error": "007"
         }
+        return;
     }
 
     //올바른 충전 타입인지 확인
