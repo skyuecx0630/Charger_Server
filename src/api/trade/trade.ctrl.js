@@ -252,3 +252,58 @@ export const MakeTrade = async (ctx) => {
     ctx.status = 200;
 }
 
+export const TradeList = async (ctx) => {
+    //로그인 한 유저인가?
+    const user = await decodeToken(ctx.header.token);
+
+    if (user == null) {
+        console.log(`MakeTrade - 올바르지 않은 토큰입니다.`);
+        ctx.status = 400;
+        ctx.body = {
+            "error": "009"
+        }
+        return;
+    }
+
+    const sellList = await trade_list.findAll({
+        where: {
+            seller: user.user_code
+        },
+        order: ["traded_at"]
+    })
+
+    let sell_list = [];
+
+    for (var i in sellList) {
+        const record = {
+            price: sellList[i].credit,
+            electricity: sellList[i].electricity,
+            traded_at: sellList[i].traded_at
+        }
+        sell_list.push(record)
+    }
+
+    const buyList = await trade_list.findAll({
+        where: {
+            buyer: user.user_code
+        },
+        order: ["traded_at"]
+    })
+
+    let buy_list = [];
+
+    for (var i in buyList) {
+        const record = {
+            price: buyList[i].credit,
+            electricity: buyList[i].electricity,
+            traded_at: buyList[i].traded_at
+        }
+        buy_list.push(record)
+    }
+
+    ctx.status = 200;
+    ctx.body = {
+        sell_list: sell_list,
+        buy_list: buy_list
+    }
+}
