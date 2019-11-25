@@ -65,7 +65,7 @@ export const AddCredit = async (ctx) => {
         console.log(`AddCredit - 올바르지 않은 충전 유형입니다. / 충전 유형 : ${ctx.request.body.payment_type}`);
         ctx.status = 400;
         ctx.body = {
-            "error": "008"
+            "msg" : "현재 미구현 기능입니다."
         }
         return;
     }
