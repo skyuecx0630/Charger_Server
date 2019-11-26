@@ -61,7 +61,7 @@ export const AddCredit = async (ctx) => {
     }
 
     //올바른 충전 타입인지 확인
-    if (ctx.request.body.payment_type < 1 || ctx.request.body.payment_type > 3){
+    if (ctx.request.body.payment_type != 4){
         console.log(`AddCredit - 올바르지 않은 충전 유형입니다. / 충전 유형 : ${ctx.request.body.payment_type}`);
         ctx.status = 400;
         ctx.body = {
