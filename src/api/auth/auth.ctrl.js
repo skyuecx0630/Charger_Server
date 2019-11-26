@@ -33,7 +33,7 @@ export const Login = async (ctx) => {
         console.log(`Login - 존재하지 않는 계정입니다. / 입력된 아이디 : ${ctx.request.body.id}`);
         ctx.status = 400;
         ctx.body = {
-            "error": "005"
+            "msg": "아이디나 비밀번호를 확인해 주세요."
         }
         return;
     }
@@ -44,7 +44,7 @@ export const Login = async (ctx) => {
         console.log(`Login - 비밀번호를 틀렸습니다.`);
         ctx.status = 400;
         ctx.body = {
-            "error": "006"
+            "msg": "아이디나 비밀번호를 확인해 주세요."
         }
         return;
     }
@@ -97,7 +97,7 @@ export const Register = async (ctx) => {
 
         ctx.status = 400;
         ctx.body = {
-            "error": "002"
+            "msg" : "이미 존재하는 아이디입니다."
         }
         return;
     }
@@ -113,7 +113,7 @@ export const Register = async (ctx) => {
 
         ctx.status = 400;
         ctx.body = {
-            "error": "003"
+            "msg": "이미 존재하는 이메일입니다."
         }
         return;
     }
@@ -129,7 +129,7 @@ export const Register = async (ctx) => {
 
         ctx.status = 400;
         ctx.body = {
-            "error": "004"
+            "error": "이미 가입된 전화번호입니다."
         }
         return;
     }
